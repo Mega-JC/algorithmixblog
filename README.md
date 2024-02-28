@@ -1,5 +1,7 @@
 # Algorithmix.blog: A blogging site for technologists and software developers.
 
+[![Project Demo](https://i.ytimg.com/vi/nXzZcE1BEfI/maxresdefault.jpg)](https://youtu.be/nXzZcE1BEfI)
+
 Welcome to Algorithmix.blog! A blogging website for technologists and software developers, which is driven by dynamic, user-generated content in the form of posts. This project is the final project of the 'CS50s Web Programming with Python and JavaScript' course. It is structured like a compact social network, but tailored to the creation of long, dynamic posts, so called 'blog posts'. On this site, you are able to create posts privately, while customizing them until you are ready to release them into the wild by making them public, for others to discover, read and enjoy. Registered users who enjoyed reading one of your posts can give it a like to boost its popularity, or can add it to their list of favorite posts to remember them in the future. They can also comment on your posts to share opinions, and can also reply to other comments, thereby creating small threads of comments under your post. These comments can be liked too.
 
 Algorithmixblog contains several ways of discovering new and interesting content created on the platform. The homepage shows three infinite scroll widgets, which sort the posts created by users based on 3 different categories: Top, Newest, and Most Active. These widgets show blog posts that are sorted based on their like count, comment count, date of creation, and more.
