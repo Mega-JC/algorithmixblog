@@ -1,0 +1,23 @@
+{% extends "algorithmixblog/layout.html" %}
+
+{% block body %}
+    <form class="create-bp-form" action="{% url 'create_blogpost' %}" method="POST">
+        <div class="title">Create Blog Post</div>
+        {% csrf_token %}
+        <input class="input-text" type="text" name="title" placeholder="Post Title (<= 128 char.)" required>
+        <input class="input-text" type="url" name="cover_url"  placeholder="Cover URL (<=1024 char.)">
+        <input class="input-text" type="text" name="tags"  placeholder="Post Tags (<= 1024 char.), like 'JavaScript, C++, Front-End...'">
+        <input class="input-text" type="text" name="description" placeholder="Post Description (<= 256 char.)">
+        <select class="select" name="visibility" id="create-bp-select">
+            <option class="option" value="public">Public 🌎 - Visible to everyone</option>
+            <option class="option" value="private">Private 🔐 - Only visible to you</option>
+        </select>
+        {% if message %}
+            <p>{{message}}</p>
+        {% endif %}        
+        <textarea class="input-textarea" name="text" cols="30" rows="10" placeholder="Post Text (<= 40960 char.). Large parts of the markdown spec are supported!" required></textarea>
+
+        <button class="btn" type="submit">Create New Blog Post</button>
+
+    </form>
+{% endblock %}

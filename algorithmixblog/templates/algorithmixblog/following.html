@@ -1,0 +1,10 @@
+{% extends "algorithmixblog/layout.html" %}
+
+{% block body %}
+    <div class="bp-feed-title">{{target_user.following.count}} Following</div>
+    {% if target_user.following.exists %}
+        <div id="user-cell-container" data-counter="0" data-quantity="20" data-sort="newest" data-view_mode="following" data-user_id="{{target_user.id}}"></div>
+    {% else %}
+        <div id="search-bp-no-results">Nothing to show.</div>
+    {% endif %}
+{% endblock %}

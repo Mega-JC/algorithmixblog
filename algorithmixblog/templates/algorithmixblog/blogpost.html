@@ -1,0 +1,164 @@
+{% extends "algorithmixblog/layout.html" %}
+
+{% block body %}
+<div id="view-bp-container">
+    <div id="post-wrapper">
+        <div class="post-head">
+            {% if blogpost.cover_url %}
+                <div class="post-cover"><img class="cover-img" src="{{blogpost.cover_url}}"></div>
+            {% else %}
+                <div class="post-cover"></div>
+            {% endif %}
+            <div class="post-cover-gradient"></div>
+            
+            <div class="post-title">{{blogpost.title}}</div>
+            <div class="post-details">
+                <span class="author-info">by <a href="{% url 'user_profile' blogpost.author.id %}"><span class="username">{{blogpost.author.username}}</span></a></span>
+                <span>created on {{blogpost.created|date:"d M Y, g:i:s A"}} <span class="tz">(UTC)</span></span>
+                {% if blogpost.updated != blogpost.created %}
+                    <span class="edited">(edited: {{blogpost.updated|date:"d M Y, g:i:s A"}})</span>
+                {% endif %}
+            </div>
+            <div class="post-description">{{blogpost.description}}</div>
+
+            {% if blogpost.tags %}
+                <ul class="post-tag-container">
+                    {% for tagobj in blogpost.tags.all %}
+                        <li><a href="/search?tags={{tagobj.name}}"><button>{{tagobj.name}}</button></a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <hr id="post-divider">
+        <div id="post-options">
+            {% if request.user.is_authenticated %}
+                {% if request.user in blogpost.likers.all %}
+                    <button class="post-like-btn liked" data-toggle="1" data-blogpost_id="{{blogpost.id}}">
+                        <span class="count">{{blogpost.likers.count}}</span>
+                        <svg class="icon" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                            <path d="M288,96L288,64L320,64L320,32L352,32L352,0L448,0L448,32L480,32L480,64L512,64L512,256L480,256L480,320L448,320L448,352L416,352L416,384L384,384L384,416L352,416L352,448L320,448L320,479.933C320.052,479.953 320.053,479.976 320,480L320,479.933C318.994,479.538 298.758,479.943 288,480L288,512L224,512L224,480C213.242,479.943 193.006,479.538 192,479.933L192,480C191.947,479.976 191.948,479.953 192,479.933L192,448L160,448L160,416L128,416L128,384L96,384L96,352L64,352L64,319.959L32,320L32,256L0,256L0,65L32,64L32,32L64,32L64,0L160,0L160,32L192,32L192,64L224,64L224,96L288,96ZM64,128L96.187,128L96,96L128,96L128,160.002L96,160L96,224L64,224L64,128Z"/>
+                        </svg>
+                    </button>
+                {% else %}
+                    <button class="post-like-btn" data-toggle="0" data-blogpost_id="{{blogpost.id}}">
+                        <span class="count">{{blogpost.likers.count}}</span>
+                        <svg class="icon" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                            <path d="M288,96L288,64L320,64L320,32L352,32L352,0L448,0L448,32L480,32L480,64L512,64L512,256L480,256L480,320L448,320L448,352L416,352L416,384L384,384L384,416L352,416L352,448L320,448L320,479.933C320.052,479.953 320.053,479.976 320,480L320,479.933C318.994,479.538 298.758,479.943 288,480L288,512L224,512L224,480C213.242,479.943 193.006,479.538 192,479.933L192,480C191.947,479.976 191.948,479.953 192,479.933L192,448L160,448L160,416L128,416L128,384L96,384L96,352L64,352L64,319.959L32,320L32,256L0,256L0,65L32,64L32,32L64,32L64,0L160,0L160,32L192,32L192,64L224,64L224,96L288,96ZM64,128L96.187,128L96,96L128,96L128,160.002L96,160L96,224L64,224L64,128Z"/>
+                        </svg>
+                    </button>
+                {% endif %}
+                <br>
+                {% if request.user in blogpost.favorers.all %}
+                    <button class="favorites-btn favorited" data-toggle="1" data-blogpost_id="{{blogpost.id}}">Remove Favorite ❌</button>
+                {% else %}
+                    <button class="favorites-btn" data-toggle="0" data-blogpost_id="{{blogpost.id}}">Add Favorite ⭐</button>
+                {% endif %}
+
+                {% if blogpost.author == request.user %}
+                    {% if blogpost.is_private %}
+                        <button class="visibility-btn" data-toggle="1" data-blogpost_id="{{blogpost.id}}">Make Public 🌎</button>
+                    {% else %}
+                        <button class="visibility-btn" data-toggle="0" data-blogpost_id="{{blogpost.id}}">Make Private 🔐</button>
+                    {% endif %}
+                    <a href="{% url 'edit_blogpost' blogpost.id %}"><button class="edit-btn">Edit</button></a>
+                    <button class="delete-btn" data-blogpost_id="{{blogpost.id}}">Delete</button>
+                {% endif %}
+
+            {% else %}
+                <button class="post-like-btn" data-toggle="0" data-blogpost_id="{{blogpost.id}}" disabled>
+                    <span disabled class="count">{{blogpost.likers.count}}</span>
+                    <svg disabled class="icon" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                        <path d="M288,96L288,64L320,64L320,32L352,32L352,0L448,0L448,32L480,32L480,64L512,64L512,256L480,256L480,320L448,320L448,352L416,352L416,384L384,384L384,416L352,416L352,448L320,448L320,479.933C320.052,479.953 320.053,479.976 320,480L320,479.933C318.994,479.538 298.758,479.943 288,480L288,512L224,512L224,480C213.242,479.943 193.006,479.538 192,479.933L192,480C191.947,479.976 191.948,479.953 192,479.933L192,448L160,448L160,416L128,416L128,384L96,384L96,352L64,352L64,319.959L32,320L32,256L0,256L0,65L32,64L32,32L64,32L64,0L160,0L160,32L192,32L192,64L224,64L224,96L288,96ZM64,128L96.187,128L96,96L128,96L128,160.002L96,160L96,224L64,224L64,128Z"/>
+                    </svg>
+                </button>
+            {% endif %}
+        </div>
+        <div id="post-body">
+            <div class="text">{{ blogpost_text_md|safe }}</div>
+        </div>
+    </div>
+
+    <div id="comment-section-title">Comments: {{blogpost.comments.all.count}}</div>
+    {% if request.user.is_authenticated %}
+        <form id="comment-form" action="{% url 'view_blogpost' blogpost.id %}" method="POST">
+            <div class="title">Add New Comment</div>
+            <div class="char-count title"></div>
+            {% csrf_token %}
+            <input type="hidden" name="create" id="comment-mode">
+            <textarea class="input-textarea" name="text" id="new-comment" cols="30" rows="10" placeholder="Add a new comment. Must not exceed 4096 characters in length." required></textarea>
+            <button id="submit-comment-btn" class="btn" type="submit">Create Comment</button>
+        </form>
+    {% endif %}
+
+    {% if comment_error %}
+        <p id="comment-error">{{comment_error}}</p>
+    {% endif %}
+    
+    <div id="comments">
+        <div id="comment-container">
+            {% for comment in comment_page_obj %}
+                <div id="comment-{{comment.id}}" class="comment-wrapper">
+                    <div class="comment-head">
+                        <div class="info"><a href="{% url 'user_profile' comment.author.id %}"><span class="username">{{comment.author.username}}</span></a></div>
+
+                        {% if comment.created != comment.updated %}
+                            <div class="info">{{comment.created|date:"d M Y, g:i:s A"}} <span class="tz">(UTC)</span><br>(edited {{comment.updated|date:"d M Y, g:i:s A"}})</div>
+                        {% else %}
+                            <div class="info">{{comment.created|date:"d M Y, g:i:s A"}} <span class="tz">(UTC)</span></div>
+                        {% endif %}
+                        {% if comment.reference %}
+                            <div class="reply-info info"><i>Replying to a <b><a href="#comment-{{comment.reference.id}}">comment</a></b> from <a href="{% url 'user_profile' comment.reference.author.id %}"><span class="username">{{comment.reference.author.username}}</span></a> on <br>{{comment.reference.created|date:"d M Y, g:i:s A"}}</i></div>
+                            <div class="comment-ref-text">{{comment.reference.text}}</div>
+                        {% elif comment.had_reference %}
+                            <div class="reply-info info"><i>Replying to a deleted <b>comment</b></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="comment-body">{{comment.text}}</div>
+                    <div class="comment-foot">
+                        {% if request.user.is_authenticated %}
+                            {% if request.user in comment.likers.all %}
+                                <button class="like-btn liked" data-toggle="1" data-comment_id="{{comment.id}}">
+                                    <span class="count">{{comment.likers.count}}</span>
+                                    <svg class="icon" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                                        <path d="M288,96L288,64L320,64L320,32L352,32L352,0L448,0L448,32L480,32L480,64L512,64L512,256L480,256L480,320L448,320L448,352L416,352L416,384L384,384L384,416L352,416L352,448L320,448L320,479.933C320.052,479.953 320.053,479.976 320,480L320,479.933C318.994,479.538 298.758,479.943 288,480L288,512L224,512L224,480C213.242,479.943 193.006,479.538 192,479.933L192,480C191.947,479.976 191.948,479.953 192,479.933L192,448L160,448L160,416L128,416L128,384L96,384L96,352L64,352L64,319.959L32,320L32,256L0,256L0,65L32,64L32,32L64,32L64,0L160,0L160,32L192,32L192,64L224,64L224,96L288,96ZM64,128L96.187,128L96,96L128,96L128,160.002L96,160L96,224L64,224L64,128Z"/>
+                                    </svg>
+                                </button>
+                            {% else %}
+                                <button class="like-btn" data-toggle="0" data-comment_id="{{comment.id}}">
+                                    <span class="count">{{comment.likers.count}}</span>
+                                    <svg class="icon" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                                        <path d="M288,96L288,64L320,64L320,32L352,32L352,0L448,0L448,32L480,32L480,64L512,64L512,256L480,256L480,320L448,320L448,352L416,352L416,384L384,384L384,416L352,416L352,448L320,448L320,479.933C320.052,479.953 320.053,479.976 320,480L320,479.933C318.994,479.538 298.758,479.943 288,480L288,512L224,512L224,480C213.242,479.943 193.006,479.538 192,479.933L192,480C191.947,479.976 191.948,479.953 192,479.933L192,448L160,448L160,416L128,416L128,384L96,384L96,352L64,352L64,319.959L32,320L32,256L0,256L0,65L32,64L32,32L64,32L64,0L160,0L160,32L192,32L192,64L224,64L224,96L288,96ZM64,128L96.187,128L96,96L128,96L128,160.002L96,160L96,224L64,224L64,128Z"/>
+                                    </svg>
+                                </button>
+                            {% endif %}
+                            <button class="reply-btn" data-toggle="0" data-comment_id="{{comment.id}}">Reply</button>
+                            {% if comment.author.id == request.user.id %}
+                                <button class="edit-btn" data-toggle="0" data-comment_id="{{comment.id}}">Edit</button>
+                                <button class="delete-btn" data-comment_id="{{comment.id}}">Delete</button>
+                            {% endif %}
+                        {% else %}
+                            <button class="like-btn" data-toggle="0" data-comment_id="{{comment.id}}" disabled>
+                                <span class="count" disabled>{{comment.likers.count}}</span>
+                                <svg class="icon" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" disabled>
+                                    <path disabled d="M288,96L288,64L320,64L320,32L352,32L352,0L448,0L448,32L480,32L480,64L512,64L512,256L480,256L480,320L448,320L448,352L416,352L416,384L384,384L384,416L352,416L352,448L320,448L320,479.933C320.052,479.953 320.053,479.976 320,480L320,479.933C318.994,479.538 298.758,479.943 288,480L288,512L224,512L224,480C213.242,479.943 193.006,479.538 192,479.933L192,480C191.947,479.976 191.948,479.953 192,479.933L192,448L160,448L160,416L128,416L128,384L96,384L96,352L64,352L64,319.959L32,320L32,256L0,256L0,65L32,64L32,32L64,32L64,0L160,0L160,32L192,32L192,64L224,64L224,96L288,96ZM64,128L96.187,128L96,96L128,96L128,160.002L96,160L96,224L64,224L64,128Z"/>
+                                </svg>
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <nav id="comment-pagination" class="pagination">
+            {% if comment_page_obj.has_previous %}
+                <a href="?commentpage=1#comments"><button class="outer">First</button></a>
+                <a href="?commentpage={{comment_page_obj.previous_page_number}}#comments"><button>Previous</button></a>
+            {% endif %}
+            <div class="info">Page {{comment_page_obj.number}} of {{comment_page_obj.paginator.num_pages}}</div>
+            {% if comment_page_obj.has_next %}
+                <a href="?commentpage={{comment_page_obj.next_page_number}}#comments"><button>Next</button></a>
+                <a href="?commentpage={{comment_page_obj.paginator.num_pages}}#comments"><button class="pagination-btn outer">Last</button></a>
+            {% endif %}
+        </nav>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "algorithmixblog/layout.html" %}
+
+{% block body %}
+
+    <div class="auth-block">
+        <h2 class="auth-title">Login</h2>
+
+        {% if message %}
+            <p class="auth-alert">{{ message }}</p>
+        {% endif %}
+
+        <form class="auth-form" action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <div class="auth-form-group">
+                <input autofocus class="auth-input-text" type="text" name="username" placeholder="Username" required>
+                <br>
+                <input class="auth-input-text" type="password" name="password" placeholder="Password" required>
+            </div>
+            <button class="auth-btn green-btn">Submit</button>
+        </form>
+
+        <p class="auth-info">Don't have an account? <a href="{% url 'register' %}">Register here.</a></p>
+    </div>
+{% endblock %}

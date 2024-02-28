@@ -1,0 +1,55 @@
+{% extends "algorithmixblog/layout.html" %}
+
+{% block body %}
+<div id="homepage-widgets">
+    <div class="homepage-widget-wrapper">
+        <div class="homepage-widget-head">
+            <span class="homepage-widget-title">
+                Top Posts
+            </span>
+            <button class="homepage-widget-toggle-btn">
+                <svg class="homepage-widget-toggle" width="100%" height="100%" viewBox="0 0 128 128" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                    <g transform="matrix(-1,1.22465e-16,-1.6676e-16,-1.3617,128,174.298)">
+                        <path d="M64,34L128,128L0,128L64,34Z"/>
+                    </g>
+                </svg>            
+            </button>
+        </div>
+        <div class="homepage-widget" data-counter="0" data-quantity="4" data-sort="top">
+        </div>
+    </div>
+    <div class="homepage-widget-wrapper">
+        <div class="homepage-widget-head">
+            <span class="homepage-widget-title">
+                Newest
+            </span>
+            <button class="homepage-widget-toggle-btn">
+                <svg class="homepage-widget-toggle" width="100%" height="100%" viewBox="0 0 128 128" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                    <g transform="matrix(-1,1.22465e-16,-1.6676e-16,-1.3617,128,174.298)">
+                        <path d="M64,34L128,128L0,128L64,34Z"/>
+                    </g>
+                </svg>            
+            </button>
+        </div>
+        <div class="homepage-widget" data-counter="0" data-quantity="4" data-sort="newest">
+        </div>
+        
+    </div>
+    <div class="homepage-widget-wrapper">
+        <div class="homepage-widget-head">
+            <span class="homepage-widget-title">
+                Most Active
+            </span>
+            <button class="homepage-widget-toggle-btn">
+                <svg class="homepage-widget-toggle" width="100%" height="100%" viewBox="0 0 128 128" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                    <g transform="matrix(-1,1.22465e-16,-1.6676e-16,-1.3617,128,174.298)">
+                        <path d="M64,34L128,128L0,128L64,34Z"/>
+                    </g>
+                </svg>            
+            </button>
+        </div>
+        <div class="homepage-widget" data-counter="0" data-quantity="4" data-sort="mostactive">   
+        </div>
+    </div>
+</div>
+{% endblock %}

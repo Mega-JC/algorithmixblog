@@ -1,0 +1,75 @@
+{% extends "algorithmixblog/layout.html" %}
+
+{% block body %}
+    <div id="user-info-container">
+        <div class="title">{{target_user.username}}</div>
+        <div class="details">
+            <div class="info-small">E-Mail: <b>{{target_user.email}}</b></div>
+            <div class="info-small">Created on: <b>{{target_user.date_joined|date:"d M Y, g:i:s A"}}</b></div>
+            <div class="info-small">#ID: <b>{{target_user.id}}</b></div>
+            <div class="follow-info">
+                <div class="followers"><a href="{% url 'user_followers' target_user.id %}"><div class="count">{{target_user.followers.all.count}}</div> Followers</a></div>
+                <div class="following"><a href="{% url 'user_following' target_user.id %}"><div class="count">{{target_user.following.all.count}}</div> Following</a></div>
+            </div>
+        </div>
+
+        {% if target_user.bio %}
+            <div class="bio">{{target_user.bio}}</div>
+        {% else %}
+            <div class="bio"><i>Seems like this user would like to remain a mystery...</i></div>
+        {% endif %}
+
+        {% if request.user.is_authenticated %}
+            {% if info_error %}
+                <div id="info-error-msg">{{info_error}}</div>
+            {% endif %}
+            {% if target_user.id == request.user.id %}
+                <form id="edit-info-form" action="{% url 'user_profile' target_user.id %}" method="POST" {% if not info_error %}style="display: none;"{% endif %}>
+                    {% csrf_token %}
+                    <div class="title">Edit Account Details</div>
+                    <input class="input-text" type="text" name="username" value="{{target_user.username}}" placeholder="Username" required>
+                    <input class="input-text" type="email" name="email" value="{{target_user.email}}" placeholder="Email" required>
+                    <textarea name="bio" class="input-textarea" placeholder="Bio. Tell us about yourself! :)">{{target_user.bio}}</textarea>
+                    <input class="input-text" type="password" name="password" placeholder="Old Password" required>
+                    <input class="input-text" type="password" name="new_password" placeholder="New Password">
+                    <input class="input-text" type="password" name="new_password_confirm" placeholder="Confirm New Password">
+                    
+                    <button class="submit-btn" type="submit">Save Changes</button>
+                </form>
+                <div id="profile-options">
+                    {% if info_error %}
+                        <button class="edit-bio-btn" data-toggle="1">Cancel</button>
+                    {% else %}
+                        <button class="edit-bio-btn" data-toggle="0">Edit Your Info</button>
+                    {% endif %}
+                    <button class="delete-user-btn" data-user_id="{{target_user.id}}">Delete Account</button>
+                </div>
+            {% else %}
+                <div id="profile-options">
+                    {% if request.user in target_user.followers.all %}
+                        <button class="follow-btn followed" data-toggle="1" data-user_id="{{target_user.id}}">Unfollow</button>
+                    {% else %}
+                        <button class="follow-btn" data-toggle="0" data-user_id="{{target_user.id}}">Follow</button>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {% if target_user.blogposts %}
+        <div class="search-bp-result-info">{% if target_user.id == request.user.id %}{{target_user.blogposts.count}}{% else %}{{public_blogpost_count}}{% endif %} Posts</div>
+        <label class="select-label" for="sort-user-bp-select">Sort by:</label>
+        <select class="select" name="blogpostsort" id="sort-user-bp-select">
+            <option class="option" value="userprofilenewest">Newest First</option>
+            <option class="option" value="userprofileoldest">Oldest First</option>
+            <option class="option" value="userprofilemostactive">Most Active</option>
+            {% if target_user == request.user %}
+                <option class="option" value="userprofilepublic">Public First</option>
+                <option class="option" value="userprofileprivate">Private First</option>
+            {% endif %}
+        </select>
+        <div id="user-post-container" data-counter="0" data-quantity="20" data-sort="userprofilenewest" data-publiconly={% if target_user.id == request.user.id %}"false"{% else %}"true"{% endif %} data-user_id="{{target_user.id}}"></div>
+    {% else %}
+        <div class="search-bp-result-info">Nothing to show.</div>
+    {% endif %}
+{% endblock %}

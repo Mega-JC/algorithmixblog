@@ -1,0 +1,23 @@
+{% extends "algorithmixblog/layout.html" %}
+
+{% block body %}
+    <form class="create-bp-form" action="{% url 'edit_blogpost' blogpost_id %}" method="POST">
+        <div class="title">Edit Blog Post</div>
+        {% csrf_token %}
+        <input class="input-text" type="text" name="title" value="{{blogpost.title}}" placeholder="Post Title (<= 128 char.)" required>
+        <input class="input-text" type="url" name="cover_url" value="{{blogpost.cover_url}}" placeholder="Cover URL (<=1024 char.)">
+        <input class="input-text" type="text" name="tags" value="{{blogpost_tag_str}}" placeholder="Post Tags (<= 1024 char.), like 'JavaScript, C++, Front-End...'">
+        <input class="input-text" type="text" name="description" value="{{blogpost.description}}" placeholder="Post Description (<= 256 char.)">
+        <select class="select" name="visibility" id="create-bp-select">
+            <option class="option" value="public" {% if not blogpost.is_private %}selected="selected"{% endif %}>Public 🌎 - Visible to everyone</option>
+            <option class="option" value="private" {% if blogpost.is_private %}selected="selected"{% endif %}>Private 🔐 - Only visible to you</option>
+        </select>
+        {% if message %}
+            <p>{{message}}</p>
+        {% endif %}        
+        <textarea class="input-textarea" name="text" cols="30" rows="10" placeholder="Post Text (<= 40960 char.). Basic Markdown is supported!" required>{{blogpost.text}}</textarea>
+
+        <button class="btn" type="submit">Save Changes</button>
+
+    </form>
+{% endblock %}

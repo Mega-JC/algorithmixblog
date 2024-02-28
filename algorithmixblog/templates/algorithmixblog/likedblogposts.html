@@ -1,0 +1,76 @@
+{% extends "algorithmixblog/layout.html" %}
+
+{% block body %}
+    <div class="bp-feed-title">Posts You've Liked</div>
+    {% if feed_page_obj %}
+        <div class="feed-posts-container">
+            {% for blogpost in feed_page_obj %}
+                {% if blogpost.is_private %}
+                    {% if blogpost.author.id == request.user.id %}
+                        <div class="bp-prev-cell homepage-wh private your-post">
+                    {% else %}
+                        <div class="bp-prev-cell homepage-wh private">
+                    {% endif %}
+                {% else %}
+                    {% if blogpost.author.id == request.user.id %}
+                        <div class="bp-prev-cell homepage-wh your-post">
+                    {% else %}
+                        <div class="bp-prev-cell homepage-wh">
+                    {% endif %}
+                {% endif %}
+                    <a href="{% url 'view_blogpost' blogpost.id %}">
+                        <span class="title">{{blogpost.title}}</span>
+                    </a>
+                    <div class="likes-comments">
+                        <span class="like-info">
+                            <svg class="icon" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                                <path d="M288,96L288,64L320,64L320,32L352,32L352,0L448,0L448,32L480,32L480,64L512,64L512,256L480,256L480,320L448,320L448,352L416,352L416,384L384,384L384,416L352,416L352,448L320,448L320,479.933C320.052,479.953 320.053,479.976 320,480L320,479.933C318.994,479.538 298.758,479.943 288,480L288,512L224,512L224,480C213.242,479.943 193.006,479.538 192,479.933L192,480C191.947,479.976 191.948,479.953 192,479.933L192,448L160,448L160,416L128,416L128,384L96,384L96,352L64,352L64,319.959L32,320L32,256L0,256L0,65L32,64L32,32L64,32L64,0L160,0L160,32L192,32L192,64L224,64L224,96L288,96ZM64,128L96.187,128L96,96L128,96L128,160.002L96,160L96,224L64,224L64,128Z"/>
+                            </svg>                        
+                            <span class="count">{{blogpost.likers.count}}</span>
+                        </span>
+                        <span class="comment-info">
+                            <svg class="icon" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                                <path d="M288,480L288,512L352,512L352,480L384,480L384,448L416,448L416,416L448,416L448,352L512,352L512,64L448,64L448,0L64,0L64,64L0,64L0,352L64,352L64,416L320,416L320,480L288,480ZM96,320L416,320L416,288L96,288L96,320ZM96,224L416,224L416,192L96,192L96,224ZM416,96L96,96L96,128L416,128L416,96Z"/>
+                            </svg>
+                            <span class="count">{{blogpost.comments.count}}</span>
+                        </span>
+                    </div>
+                    <span class="post-info">
+                        by <a href="{% url 'user_profile' blogpost.author.id %}"><span class="username">{{blogpost.author.username}}</span></a>
+                        <br>
+                        <span class="date">{{blogpost.created}}</span>
+                        {% if blogpost.author.id == request.user.id %}
+                            {% if blogpost.is_private %}
+                                <br><span class="visibility">Visibility: Private 🔐</span>
+                            {% else %}
+                                <br><span class="visibility">Visibility: Public 🌎</span>
+                            {% endif %}
+                        {% endif %}
+                    </span>
+                    <div class="cover-gradient"></div>
+                    {% if blogpost.cover_url %}
+                        <div class="cover"><img class="img" src="{{blogpost.cover_url}}" alt="cover"></div>
+                    {% else %}
+                        <div class="cover"></div>
+                    {% endif %}
+                    <div class="preview-text-small">
+                        {{blogpost.description}}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <nav id="feed-pagination" class="pagination">
+            {% if feed_page_obj.has_previous %}
+                <a href="?page=1"><button class="outer">First</button></a>
+                <a href="?page={{feed_page_obj.previous_page_number}}"><button>Previous</button></a>
+            {% endif %}
+            <div class="info">Page {{feed_page_obj.number}} of {{feed_page_obj.paginator.num_pages}}</div>
+            {% if feed_page_obj.has_next %}
+                <a href="?page={{feed_page_obj.next_page_number}}"><button>Next</button></a>
+                <a href="?page={{feed_page_obj.paginator.num_pages}}"><button class="outer">Last</button></a>
+            {% endif %}
+        </nav>
+    {% else %}
+        <div id="search-bp-no-results">Nothing to show.</div>
+    {% endif %}
+{% endblock %}
